@@ -1,0 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace identity.Vms{
+  public class LoginVM{
+    public string UserName { get; set; }
+
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
+  }
+}

@@ -1,0 +1,24 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Register</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="example-form"
+      [formGroup]='formGroup'>
+      <mat-form-field *ngFor="let field of fields | keyvalue:originalOrder">
+        <mat-label>{{field.key}}</mat-label>
+        <input matInput
+          [formControlName]="field.key">
+      </mat-form-field>
+    </form>
+
+    <ul *ngIf="errors"
+      [innerHTML]='errors'></ul>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button [disabled]='formGroup.invalid'
+      (click)="login()"
+      mat-button>Submit</button>
+  </mat-card-actions>
+</mat-card>
