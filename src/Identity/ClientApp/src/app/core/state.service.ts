@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+export interface UserState {
+  userName: string;
+  isAuthenticated: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
-  userState: UserState = { userName: '', isAuthenticated: false };
+
+  private readonly userStateSource = new BehaviorSubject<UserState>({ userName: '', isAuthenticated: false });
+  public userState$ = this.userStateSource.asObservable();
 
   constructor() { }
 
@@ -12,15 +21,11 @@ export class StateService {
    * setAuthentication
    */
   public setAuthentication(state: UserState) {
-    this.userState = state;
+    this.userStateSource.next(state)
   }
 
-  public isAuthenticated() {
-    return this.userState.isAuthenticated;
+  public isAuthenticated(): Observable<boolean> {
+    return this.userStateSource.pipe(map(x => x.isAuthenticated))
   }
 }
 
-export interface UserState {
-  userName: string;
-  isAuthenticated: boolean;
-}

@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { RegisterComponent } from './components/register/register.component';
 import { ClaimsComponent } from './components/claims/claims.component';
 import { LoginComponent } from './components/login/login.component';
+import { ClaimsGuard } from './core/claims.guard';
 
 
 const routes: Routes = [
@@ -13,7 +14,7 @@ const routes: Routes = [
     path: 'login', component: LoginComponent
   },
   {
-    path: 'claims', component: ClaimsComponent
+    path: 'claims', component: ClaimsComponent, canActivate: [ClaimsGuard]
   },
 ];
 

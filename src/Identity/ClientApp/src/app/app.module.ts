@@ -12,6 +12,7 @@ import { AppComponent } from './components/app/app.component';
 import { NavComponent } from './components/nav/nav.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './core/http.interceptor';
@@ -33,6 +34,7 @@ import { ErrorInterceptor } from './core/http.interceptor';
     MatInputModule,
     MatCardModule,
     MatButtonModule,
+    MatToolbarModule,
     HttpClientModule,
     AppRoutingModule
   ],

@@ -1,1 +1,15 @@
-<p>nav works!</p>
+<mat-toolbar>
+
+  <span>Identity</span>
+  <span class="example-spacer"></span>
+
+  <ng-container *ngIf="isAuthenticated$ | async">
+    <small>{{userName$ | async}}</small>
+    <button mat-button
+      (click)="signOut()"
+      class="example-icon"
+      aria-label="Example icon-button with share icon">
+      Sign Out
+    </button>
+  </ng-container>
+</mat-toolbar>
