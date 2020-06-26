@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]/[action]")]
 public class AccountController : Controller
 {
-  private readonly UserManager<AppUser> _userManager;
+  private readonly UserManager<IdentityUser> _userManager;
 
-  public AccountController(UserManager<AppUser> userManager)
+  public AccountController(UserManager<IdentityUser> userManager)
   {
     this._userManager = userManager;
   }
@@ -38,7 +38,7 @@ public class AccountController : Controller
         };
       }
 
-      user = new AppUser
+      user = new IdentityUser
       {
         Id = Guid.NewGuid().ToString(),
         UserName = model.UserName,
