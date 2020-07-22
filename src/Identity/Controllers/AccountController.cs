@@ -14,11 +14,14 @@ using Microsoft.AspNetCore.Mvc;
 public class AccountController : Controller
 {
   private readonly UserManager<IdentityUser> _userManager;
+  private readonly SignInManager<IdentityUser> _signInManager;
 
-  public AccountController(UserManager<IdentityUser> userManager)
+  public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
   {
-    this._userManager = userManager;
+    _userManager = userManager;
+    _signInManager = signInManager;
   }
+
 
   [HttpPost]
   public async Task<ResultVM> Register([FromBody] RegisterVM model)
@@ -49,6 +52,9 @@ public class AccountController : Controller
 
       if (result.Succeeded)
       {
+        Claim trialClaim = new Claim("Trial", DateTime.Now.ToString());
+        await _userManager.AddClaimsAsync(user, new[] { trialClaim });
+
         return new ResultVM
         {
           Status = Status.Success,
@@ -86,17 +92,17 @@ public class AccountController : Controller
 
       if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
       {
-        var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
-        identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+        await _signInManager.PasswordSignInAsync(model.UserName, model.Password, true, lockoutOnFailure: false);
 
         return new ResultVM
         {
           Status = Status.Success,
           Message = "Succesfull login",
-          Data = model
+          Data = new UserStateVM{
+              IsAuthenticated = true,
+              UserName = model.UserName,
+              Roles = ((ClaimsIdentity)User.Identity).Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList()
+          }
         };
       }
 
@@ -140,7 +146,8 @@ public class AccountController : Controller
     return new UserStateVM
     {
       IsAuthenticated = User.Identity.IsAuthenticated,
-      UserName = User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty
+      UserName = User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty,
+      Roles = ((ClaimsIdentity)User.Identity).Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList()
     };
   }
 

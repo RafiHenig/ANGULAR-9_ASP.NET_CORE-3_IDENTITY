@@ -8,12 +8,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Net;
-using identity.Infrastructure;
 using System;
 using Microsoft.AspNetCore.Authentication;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Identity.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Identity
 {
@@ -38,19 +39,39 @@ namespace Identity
 
       services.AddDbContext<IdentityDbContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("Default"),
-        optionsBuilder =>
-        optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name))
+        optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name))
         );
 
-      services.AddIdentityCore<IdentityUser>(options => { });
-      services.AddScoped<IUserStore<IdentityUser>, UserOnlyStore<IdentityUser, IdentityDbContext>>();
+      services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<IdentityDbContext>()
+                    .AddDefaultTokenProviders();
 
-      services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-              .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-              {
-                options.Events.OnRedirectToAccessDenied = ReplaceRedirector(HttpStatusCode.Forbidden, options.Events.OnRedirectToAccessDenied);
-                options.Events.OnRedirectToLogin = ReplaceRedirector(HttpStatusCode.Unauthorized, options.Events.OnRedirectToLogin);
-              });
+
+      services
+      .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+      .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+
+      services.ConfigureApplicationCookie(options =>
+      {
+        options.Events.OnRedirectToLogin = context =>
+        {
+          context.Response.Headers["Location"] = context.RedirectUri;
+          context.Response.StatusCode = 401;
+          return Task.CompletedTask;
+        };
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+          context.Response.Headers["Location"] = context.RedirectUri;
+          context.Response.StatusCode = 403;
+          return Task.CompletedTask;
+        };
+      });
+
+      services.AddScoped<IDbInitializer, DbInitializer>();
+      services.AddTransient<IAuthorizationPolicyProvider, StreamingCategoryPolicyProvider>();
+      services.AddTransient<IAuthorizationHandler, StreamingCategoryAuthorizationHandler>();
+      services.AddTransient<IAuthorizationHandler, UserCategoryAuthorizationHandler>();
+
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,13 +89,16 @@ namespace Identity
       }
 
       app.UseHttpsRedirection();
+
       app.UseStaticFiles();
+
       if (!env.IsDevelopment())
       {
         app.UseSpaStaticFiles();
       }
 
       app.UseRouting();
+
       app.UseAuthentication();
       app.UseAuthorization();
 
@@ -98,6 +122,7 @@ namespace Identity
         }
       });
     }
+
     static Func<RedirectContext<CookieAuthenticationOptions>, Task> ReplaceRedirector(
       HttpStatusCode statusCode,
       Func<RedirectContext<CookieAuthenticationOptions>, Task> existingRedirector
@@ -106,6 +131,7 @@ namespace Identity
     {
       if (context.Request.Path.StartsWithSegments("/api"))
       {
+        context.Response.Headers["Location"] = context.RedirectUri;
         context.Response.StatusCode = (int)statusCode;
         return Task.CompletedTask;
       }
@@ -113,4 +139,5 @@ namespace Identity
     };
   }
 }
+
 

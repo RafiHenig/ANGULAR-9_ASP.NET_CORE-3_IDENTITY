@@ -1,28 +1,19 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { StateService } from '../../core/state.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Inject } from "@angular/core";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { StateService } from "../../core/state.service";
+import { UserState } from "../app/app.component";
+import { ResultVM, StatusEnum } from "../../vms/result.vm";
+
 interface LoginVM {
   userName: string;
   password: string;
 }
 
-interface ResultVM {
-  status: StatusEnum;
-  message: string;
-  data: {}
-}
-
-enum StatusEnum {
-  Success = 1,
-  Error = 2
-}
-
 type ExtractKeys<K extends any> = {
   [P in keyof K]: any;
 };
-
 
 @Component({
   selector: 'app-login',
@@ -35,7 +26,6 @@ export class LoginComponent implements OnInit {
   public formGroup:FormGroup;
   public errors: string = '';
 
-
   constructor(
     public http: HttpClient,
     private fb: FormBuilder,
@@ -43,7 +33,6 @@ export class LoginComponent implements OnInit {
     public stateService: StateService,
     @Inject('BASE_URL') public baseUrl: string,
   ) { }
-
 
   ngOnInit(): void {
     this.fields = {
@@ -62,7 +51,7 @@ export class LoginComponent implements OnInit {
 
         if (status === StatusEnum.Success)
         {
-          this.stateService.setAuthentication({ isAuthenticated: true, userName: this.formGroup.value.userName })
+          this.stateService.setAuthentication(data)
           this.router.navigate(['/claims']);
         }
         else if (status === StatusEnum.Error) this.errors = data.toString();

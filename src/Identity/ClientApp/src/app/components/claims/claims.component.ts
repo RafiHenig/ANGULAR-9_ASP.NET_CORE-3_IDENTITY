@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ClaimsVM, UserClaims } from '../../vms/claim.vm';
 
 @Component({
   selector: 'app-claims',
@@ -28,12 +29,3 @@ export class ClaimsComponent implements OnInit {
 
 }
 
-interface ClaimsVM {
-  type: string;
-  value: string;
-}
-
-interface UserClaims {
-  claims: ClaimsVM[];
-  userName: string;
-}

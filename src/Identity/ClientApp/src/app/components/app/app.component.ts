@@ -1,11 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StateService } from '../../core/state.service';
-import { tap } from 'rxjs/operators';
+import { tap, delay } from 'rxjs/operators';
+import { of,concat } from 'rxjs';
 
 export interface UserState {
   userName: string;
   isAuthenticated: boolean;
+  roles: string[]
 }
 
 @Component({
@@ -22,6 +24,9 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+
+
     this.http
       .get<UserState>(`${this.baseUrl}api/account/authenticated`)
       .pipe(

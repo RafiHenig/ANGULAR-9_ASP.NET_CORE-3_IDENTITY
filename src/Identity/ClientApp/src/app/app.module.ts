@@ -16,6 +16,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './core/http.interceptor';
+import { UsersComponent } from './components/users/users.component';
+import { StreamingComponent  } from './components/videos/streaming.component';
+import { StreamingRegisterComponent } from './components/videos/streaming-register/streaming-register.component';
+import { StreamingAddComponent } from './components/videos/streaming-add/streaming-add.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +29,10 @@ import { ErrorInterceptor } from './core/http.interceptor';
     LoginComponent,
     RegisterComponent,
     NavComponent,
+    UsersComponent,
+    StreamingComponent,
+    StreamingRegisterComponent,
+    StreamingAddComponent ,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

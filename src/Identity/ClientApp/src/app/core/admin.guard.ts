@@ -3,26 +3,17 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } fro
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { HttpClient } from '@angular/common/http';
-
-export interface UserState {
-  userName: string;
-  isAuthenticated: boolean;
-}
+import { StateService } from './state.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClaimsGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
 
-  constructor(
-    private http: HttpClient,
-    @Inject('BASE_URL') public baseUrl: string,
-  ) { }
+  constructor(private stateService: StateService) { }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.http
-      .get<UserState>(`${this.baseUrl}api/account/authenticated`)
-      .pipe(map(x => x.isAuthenticated))
+    return this.stateService.userState$.pipe(map(x => x.roles.includes("Admin")))
   }
 
 }

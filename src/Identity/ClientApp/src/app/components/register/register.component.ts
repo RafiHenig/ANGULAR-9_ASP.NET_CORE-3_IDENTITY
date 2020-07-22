@@ -2,23 +2,13 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ResultVM, StatusEnum } from '../../vms/result.vm';
 
 interface RegisterVM {
   userName: string;
   email: string;
   password: string;
   confirmPassword: string;
-}
-
-interface ResultVM {
-  status: StatusEnum;
-  message: string;
-  data: {}
-}
-
-enum StatusEnum {
-  Success = 1,
-  Error = 2
 }
 
 type ExtractKeys<K extends any> = {

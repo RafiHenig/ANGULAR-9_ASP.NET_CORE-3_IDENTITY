@@ -6,12 +6,6 @@ import { HttpClient } from '@angular/common/http';
 import { Route } from '@angular/compiler/src/core';
 import { Router } from '@angular/router';
 
-export interface UserState {
-  userName: string;
-  isAuthenticated: boolean;
-}
-
-
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
@@ -37,7 +31,7 @@ export class NavComponent implements OnInit {
     this.http.post<void>(this.baseUrl + "api/Account/SignOut", null).subscribe(
       () => {
         this.router.navigate(['/login']);
-        this.state.setAuthentication({ isAuthenticated: false, userName: "" })
+        this.state.setAuthentication({ isAuthenticated: false, userName: "", roles: [] })
       },
       console.error
     )

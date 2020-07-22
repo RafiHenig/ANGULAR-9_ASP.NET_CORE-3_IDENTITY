@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-export interface UserState {
-  userName: string;
-  isAuthenticated: boolean;
-}
+import { UserState } from '../components/app/app.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
 
-  private readonly userStateSource = new BehaviorSubject<UserState>({ userName: '', isAuthenticated: false });
+  private readonly userStateSource = new BehaviorSubject<UserState>({ userName: '', isAuthenticated: false, roles: [] });
   public userState$ = this.userStateSource.asObservable();
 
   constructor() { }
