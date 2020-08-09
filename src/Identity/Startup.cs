@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Identity.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace Identity
 {
@@ -30,7 +31,14 @@ namespace Identity
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddControllersWithViews();
+
+      services.AddTransient<IAuthorizationPolicyProvider, StreamingCategoryPolicyProvider>();
+
+      // As always, handlers must be provided for the requirements of the authorization policies
+      services.AddTransient<IAuthorizationHandler, StreamingCategoryAuthorizationHandler>();
+      services.AddTransient<IAuthorizationHandler, UserCategoryAuthorizationHandler>();
+
+      services.AddMvc(options => options.EnableEndpointRouting = false);
       // In production, the Angular files will be served from this directory
       services.AddSpaStaticFiles(configuration =>
       {
@@ -47,9 +55,9 @@ namespace Identity
                     .AddDefaultTokenProviders();
 
 
-      services
-      .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-      .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+      // services
+      // .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+      // .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
       services.ConfigureApplicationCookie(options =>
       {
@@ -68,10 +76,6 @@ namespace Identity
       });
 
       services.AddScoped<IDbInitializer, DbInitializer>();
-      services.AddTransient<IAuthorizationPolicyProvider, StreamingCategoryPolicyProvider>();
-      services.AddTransient<IAuthorizationHandler, StreamingCategoryAuthorizationHandler>();
-      services.AddTransient<IAuthorizationHandler, UserCategoryAuthorizationHandler>();
-
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,18 +100,21 @@ namespace Identity
       {
         app.UseSpaStaticFiles();
       }
-
-      app.UseRouting();
-
+    //  app.UseDeveloperExceptionPage();
       app.UseAuthentication();
+      app.UseRouting();
       app.UseAuthorization();
 
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapControllerRoute(
-                  name: "default",
-                  pattern: "{controller}/{action=Index}/{id?}");
-      });
+  app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Home", action = "Index" });
+            });
 
       app.UseSpa(spa =>
       {
@@ -123,20 +130,20 @@ namespace Identity
       });
     }
 
-    static Func<RedirectContext<CookieAuthenticationOptions>, Task> ReplaceRedirector(
-      HttpStatusCode statusCode,
-      Func<RedirectContext<CookieAuthenticationOptions>, Task> existingRedirector
-    ) =>
-    context =>
-    {
-      if (context.Request.Path.StartsWithSegments("/api"))
-      {
-        context.Response.Headers["Location"] = context.RedirectUri;
-        context.Response.StatusCode = (int)statusCode;
-        return Task.CompletedTask;
-      }
-      return existingRedirector(context);
-    };
+    // static Func<RedirectContext<CookieAuthenticationOptions>, Task> ReplaceRedirector(
+    //   HttpStatusCode statusCode,
+    //   Func<RedirectContext<CookieAuthenticationOptions>, Task> existingRedirector
+    // ) =>
+    // context =>
+    // {
+    //   if (context.Request.Path.StartsWithSegments("/api"))
+    //   {
+    //     context.Response.Headers["Location"] = context.RedirectUri;
+    //     context.Response.StatusCode = (int)statusCode;
+    //     return Task.CompletedTask;
+    //   }
+    //   return existingRedirector(context);
+    // };
   }
 }
 

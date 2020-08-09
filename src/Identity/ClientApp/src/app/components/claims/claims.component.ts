@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ClaimsVM, UserClaims } from '../../vms/claim.vm';
+import { ClaimsVM, UserClaims } from '../../core/domain';
 
 @Component({
   selector: 'app-claims',

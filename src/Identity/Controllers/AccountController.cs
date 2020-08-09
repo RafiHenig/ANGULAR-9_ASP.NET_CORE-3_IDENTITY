@@ -22,7 +22,7 @@ public class AccountController : Controller
     _signInManager = signInManager;
   }
 
-
+  [AllowAnonymous]
   [HttpPost]
   public async Task<ResultVM> Register([FromBody] RegisterVM model)
   {
@@ -83,6 +83,7 @@ public class AccountController : Controller
     };
   }
 
+  [AllowAnonymous]
   [HttpPost]
   public async Task<ResultVM> Login([FromBody] LoginVM model)
   {
@@ -98,10 +99,11 @@ public class AccountController : Controller
         {
           Status = Status.Success,
           Message = "Succesfull login",
-          Data = new UserStateVM{
-              IsAuthenticated = true,
-              UserName = model.UserName,
-              Roles = ((ClaimsIdentity)User.Identity).Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList()
+          Data = new UserStateVM
+          {
+            IsAuthenticated = true,
+            UserName = model.UserName,
+            Roles = ((ClaimsIdentity)User.Identity).Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList()
           }
         };
       }

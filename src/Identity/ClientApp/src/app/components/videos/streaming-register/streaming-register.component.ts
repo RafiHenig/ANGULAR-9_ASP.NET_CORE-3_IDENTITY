@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, ViewContainerRef } from '@angular/core';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { StreamingCategoryVM } from '../../../core/domain';
 
 @Component({
   selector: 'app-streaming-register',
@@ -48,8 +49,3 @@ export class StreamingRegisterComponent {
   }
 }
 
-interface StreamingCategoryVM {
-  category: string;
-  value: number;
-  registered: boolean;
-}

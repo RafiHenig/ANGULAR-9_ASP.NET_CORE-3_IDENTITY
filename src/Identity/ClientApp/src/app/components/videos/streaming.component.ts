@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { VideoVM } from '../../core/domain';
 
 @Component({
   selector: 'app-videos',
@@ -36,8 +37,3 @@ export class StreamingComponent  implements OnInit {
   }
 }
 
-interface VideoVM {
-  url: string;
-  title: string;
-  description: string;
-}

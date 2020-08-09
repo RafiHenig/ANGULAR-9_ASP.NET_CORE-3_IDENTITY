@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ResultVM, StatusEnum } from '../../vms/result.vm';
+import { ResultVM, StatusEnum } from '../../core/domain';
 
 interface RegisterVM {
   userName: string;

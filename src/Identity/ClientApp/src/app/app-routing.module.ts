@@ -10,6 +10,7 @@ import { AdminGuard } from './core/admin.guard';
 import { StreamingComponent } from './components/videos/streaming.component';
 import { StreamingRegisterComponent } from './components/videos/streaming-register/streaming-register.component';
 import { StreamingAddComponent } from './components/videos/streaming-add/streaming-add.component';
+import { SocialApiComponent } from './components/social-api/social-api.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'videos', component: StreamingComponent },
   { path: 'streaming/register', component: StreamingRegisterComponent },
   { path: 'streaming/videos/add', component: StreamingAddComponent },
+  { path: 'share', component: SocialApiComponent },
   { path: '**', redirectTo: 'home' },
 ];
 

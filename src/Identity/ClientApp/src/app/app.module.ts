@@ -20,6 +20,7 @@ import { UsersComponent } from './components/users/users.component';
 import { StreamingComponent  } from './components/videos/streaming.component';
 import { StreamingRegisterComponent } from './components/videos/streaming-register/streaming-register.component';
 import { StreamingAddComponent } from './components/videos/streaming-add/streaming-add.component';
+import { SocialApiComponent } from './components/social-api/social-api.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { StreamingAddComponent } from './components/videos/streaming-add/streami
     UsersComponent,
     StreamingComponent,
     StreamingRegisterComponent,
-    StreamingAddComponent ,
+    StreamingAddComponent,
+    SocialApiComponent ,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

@@ -4,12 +4,8 @@ import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { StateService } from "../../core/state.service";
 import { UserState } from "../app/app.component";
-import { ResultVM, StatusEnum } from "../../vms/result.vm";
+import { LoginVM, ResultVM, StatusEnum } from "../../core/domain";
 
-interface LoginVM {
-  userName: string;
-  password: string;
-}
 
 type ExtractKeys<K extends any> = {
   [P in keyof K]: any;
@@ -36,7 +32,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.fields = {
-      userName: ['', Validators.required],
+      username: ['', Validators.required],
       password: ['', Validators.required],
     }
 
