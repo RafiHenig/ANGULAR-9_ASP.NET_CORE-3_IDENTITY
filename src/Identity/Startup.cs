@@ -7,15 +7,12 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Net;
-using System;
-using Microsoft.AspNetCore.Authentication;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Identity.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Identiy.Infrastructure;
 
 namespace Identity
 {
@@ -55,12 +52,14 @@ namespace Identity
                     .AddDefaultTokenProviders();
 
 
-      // services
-      // .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-      // .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+      services
+      .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+      .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
       services.ConfigureApplicationCookie(options =>
       {
+
+        options.Cookie.Name = ".AspNetCoreIdentityCookie";
         options.Events.OnRedirectToLogin = context =>
         {
           context.Response.Headers["Location"] = context.RedirectUri;
@@ -100,21 +99,20 @@ namespace Identity
       {
         app.UseSpaStaticFiles();
       }
-    //  app.UseDeveloperExceptionPage();
+
       app.UseAuthentication();
       app.UseRouting();
-      app.UseAuthorization();
 
-  app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+      app.UseMvc(routes =>
+                {
+                  routes.MapRoute(
+                  name: "default",
+                  template: "{controller=Home}/{action=Index}/{id?}");
 
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Home", action = "Index" });
-            });
+                  routes.MapSpaFallbackRoute(
+                  name: "spa-fallback",
+                  defaults: new { controller = "Home", action = "Index" });
+                });
 
       app.UseSpa(spa =>
       {
